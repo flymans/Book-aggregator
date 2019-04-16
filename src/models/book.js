@@ -5,10 +5,11 @@ const bookSchema = mongoose.Schema({
     author: String,
     price: Number,
     picture: String,
-    year: Number,
+    publisher: String,
     ISBN: String,
     description: String,
-    link: String
+    link: String,
+    store: String
 });
 
 export default mongoose.model('Book', bookSchema);
