@@ -15,7 +15,7 @@ dotenv.config();
 
 const app = express();
 //API
-app.get("/", (req, res) => {
+app.get("/books", (req, res) => {
   const { name, author, store, page = 1, perPage = 50 } = req.query;
 
   const params = Object.entries({ name, author, store }).reduce(
