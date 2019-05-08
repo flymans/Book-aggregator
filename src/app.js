@@ -23,9 +23,9 @@ app.use(function(req, res, next) {
 
 //API
 app.get("/books", (req, res) => {
-  const { name, author, store, page = 1, perPage = 50 } = req.query;
+  const { name, author, publisher, page = 1, perPage = 50 } = req.query;
 
-  const params = Object.entries({ name, author, store }).reduce(
+  const params = Object.entries({ name, author, publisher }).reduce(
     (acc, [key, value]) =>
       value ? { ...acc, [key]: new RegExp(value, "gi") } : acc,
     {}
