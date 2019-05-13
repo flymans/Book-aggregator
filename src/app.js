@@ -31,8 +31,14 @@ app.get("/books", (req, res) => {
     {}
   );
 
+
   Book.find(params, null, { skip: (page - 1) * perPage, limit: perPage }).then(
-    books => res.json(books)
+    books => {
+      Book.where(params).count((err, count) => 
+        res.json({data: books, meta: {total: count}})
+      );
+      
+    }
   );
 });
 
