@@ -6,20 +6,19 @@ import parser from 'fast-xml-parser';
 
 import Book from '../models/books';
 
-const getBooks = (req, res) => {
-  const { name, author, publisher, page = 1, perPage = 50 } = req.query;
+const getBooks = async (req, res) => {
+  const {
+    name, author, publisher, page = 1, perPage = 50,
+  } = req.query;
   const limit = Number(perPage);
 
   const params = Object.entries({ name, author, publisher }).reduce(
-    (acc, [key, value]) =>
-      value ? { ...acc, [key]: new RegExp(value, 'gi') } : acc,
-    {}
+    (acc, [key, value]) => (value ? { ...acc, [key]: new RegExp(value, 'gi') } : acc),
+    {},
   );
 
   Book.find(params, null, { skip: (page - 1) * limit, limit }).then((books) => {
-    Book.where(params).count((err, count) =>
-      res.json({ data: books, meta: { total: count } })
-    );
+    Book.where(params).count((err, count) => res.json({ data: books, meta: { total: count } }));
   });
 };
 
@@ -27,30 +26,26 @@ const getAuthors = (req, res) => {
   const { page = 1, perPage = 50 } = req.query;
   const limit = Number(perPage);
 
-  Book.find(null, null, { skip: (page - 1) * limit, limit }).then((books) =>
-    res.json(
-      _.uniq(
-        _.flatten(
-          books
-            .filter((book) => book.author)
-            .map((book) => book.author.split(', '))
-        )
-      )
-    )
-  );
+  Book.find(null, null, { skip: (page - 1) * limit, limit }).then((books) => res.json(
+    _.uniq(
+      _.flatten(
+        books
+          .filter((book) => book.author)
+          .map((book) => book.author.split(', ')),
+      ),
+    ),
+  ));
 };
 
 const getPublishers = (req, res) => {
   const { page = 1, perPage = 50 } = req.query;
   const limit = Number(perPage);
 
-  Book.find(null, null, { skip: (page - 1) * limit, limit }).then((books) =>
-    res.json(
-      _.uniq(
-        books.filter((book) => book.publisher).map((book) => book.publisher)
-      )
-    )
-  );
+  Book.find(null, null, { skip: (page - 1) * limit, limit }).then((books) => res.json(
+    _.uniq(
+      books.filter((book) => book.publisher).map((book) => book.publisher),
+    ),
+  ));
 };
 // save data to database
 const saveBStore = (req, res) => {
@@ -58,7 +53,7 @@ const saveBStore = (req, res) => {
     __dirname,
     '..',
     'openData',
-    'catalog-b-store.xml'
+    'catalog-b-store.xml',
   );
   const file = fs.readFileSync(filepath, 'utf-8');
   const data = parser.parse(file);
@@ -88,7 +83,7 @@ const saveBStore = (req, res) => {
         store: 'Ливре. Книжная лавка',
       });
       book.save();
-    }
+    },
   );
   res.status(201).json({ message: 'success' });
 };
@@ -120,7 +115,7 @@ const saveBook24 = (req, res) => {
         store: 'Книжный интернет-магазин Book24',
       });
       book.save();
-    }
+    },
   );
   res.status(201).json({ message: 'success' });
 };
@@ -130,7 +125,7 @@ const saveComBook = (req, res) => {
     __dirname,
     '..',
     'openData',
-    'catalog-combook.xml'
+    'catalog-combook.xml',
   );
   const file = fs.readFileSync(filepath, 'utf-8');
   const data = parser.parse(file);
@@ -157,7 +152,7 @@ const saveComBook = (req, res) => {
         store: 'Интернет-магазин КомБук',
       });
       book.save();
-    }
+    },
   );
   res.status(201).json({ message: 'success' });
 };
